@@ -27,7 +27,8 @@ class View(object):
         self.cautionColor = "#d63031"
         self.cautionHoverColor = "#ff7675"
         self.listColor = "#dfe6e9"
-        # self.buttonFonn
+        self.buttonFont = "system 12"
+        self.textColor = "#dfe6e9"
         #Add root tkinter
         root = tk.Tk()
         root.bind("<Escape>", sys.exit)
@@ -43,46 +44,54 @@ class View(object):
         browse = tk.Button(buttonFrame, text="Browse", command=self.chooseDir)
         browse.pack(side=tk.LEFT, anchor=tk.W)
         browse.config(padx=5, pady=5, bd=5, relief=tk.RAISED, bg=self.buttonColor, activebackground=self.buttonHoverColor)
+        browse.config(font=self.buttonFont, fg=self.textColor)
         #create label for entry prompt
         self.label = tk.Label(buttonFrame, text=" or enter a path to search:")
         self.label.pack(side=tk.LEFT)
-        self.label.config(padx=5, pady=5)
+        self.label.config(padx=5, pady=5, bg=self.backgroundColor)
         #create entry box
         self.entry = tk.Entry(buttonFrame, textvariable=self.dir, width=40)
         self.entry.bind("<Return>", lambda event: self.findDupes())
         self.entry.pack(side=tk.LEFT, padx=10)
         self.entry.config(relief=tk.SUNKEN, bd=5)
         self.entry.focus()
-        #create reset button linked to clearText command
-        reset = tk.Button(buttonFrame, text="Reset", command=self.clearText)
-        reset.pack(side=tk.LEFT, anchor=tk.W)
-        reset.config(padx=5, pady=5, bd=5, relief=tk.RAISED, bg=self.cautionColor, activebackground=self.cautionHoverColor)
         #create find button linked to findDupes command
         find = tk.Button(buttonFrame, text="Find Dupes", command=self.findDupes)
         find.pack(side=tk.LEFT, anchor=tk.W)
         find.config(padx=5, pady=5, bd=5, relief=tk.RAISED, bg=self.buttonColor, activebackground=self.buttonHoverColor)
+        find.config(font=self.buttonFont, fg=self.textColor)
+        #create reset button linked to clearText command
+        reset = tk.Button(buttonFrame, text="Reset", command=self.clearText)
+        reset.pack(side=tk.LEFT, anchor=tk.W)
+        reset.config(padx=5, pady=5, bd=5, relief=tk.RAISED, bg=self.cautionColor, activebackground=self.cautionHoverColor)
+        reset.config(font=self.buttonFont, fg=self.textColor)
         #create quit button linked to sys.exit command
         quit = tk.Button(buttonFrame, text="Quit", command=sys.exit)
         quit.pack(side=tk.RIGHT, anchor=tk.E)
         quit.config(padx=5, pady=5, bd=5, relief=tk.RAISED, bg=self.cautionColor, activebackground=self.cautionHoverColor)
+        quit.config(font=self.buttonFont, fg=self.textColor)
         #create results frame to house list boxes
         resultFrame = tk.Frame(root)
         resultFrame.config(padx=5, pady=5, bd=5, relief=tk.RAISED, bg=self.backgroundColor)
         resultFrame.pack(side=tk.TOP, fill=tk.BOTH)
-        scrollbar = tk.Scrollbar(resultFrame)
-        scrollbar.pack( side = tk.RIGHT, fill=tk.Y )
+        vertscrollbar = tk.Scrollbar(resultFrame)
+        vertscrollbar.pack( side = tk.RIGHT, fill=tk.Y )
+        horizscrollbar = tk.Scrollbar(resultFrame)
+        horizscrollbar.pack( side = tk.BOTTOM, fill=tk.X )
+        horizscrollbar2 = tk.Scrollbar(resultFrame)
+        horizscrollbar2.pack( side = tk.BOTTOM, fill=tk.X )
         #since there are two file locations for each duplicate files, we will use two listboxes
-        self.results = tk.Listbox(resultFrame, yscrollcommand = scrollbar.set)
+        self.results = tk.Listbox(resultFrame, yscrollcommand = vertscrollbar.set, xscrollcommand= horizscrollbar.set)
         self.results.pack( side = tk.LEFT, fill = tk.BOTH, expand=1)
         self.results.config( bg=self.listColor, bd=5)
         # self.results.config(width=resultFrame.winfo_width()//2, height=resultFrame.winfo_height())
 
-        self.results2 = tk.Listbox(resultFrame, yscrollcommand = scrollbar.set)
+        self.results2 = tk.Listbox(resultFrame, yscrollcommand = scrollbar.set, xscrollcommand= horizscrollbar.set)
         self.results2.pack( side = tk.LEFT, fill = tk.BOTH, expand=1)
         self.results2.config( bg=self.listColor, bd=5)
         # self.results2.config(width=resultFrame.winfo_width()//2, height=resultFrame.winfo_height())
 
-        scrollbar.config( command = self.syncScroll )
+        vertscrollbar.config( command = self.syncScroll )
 
     #this function will find duplicate files by the controller calling the model's find dupes function
     def findDupes(self):
