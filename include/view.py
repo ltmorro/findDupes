@@ -6,6 +6,7 @@
 import sys, os
 import tkinter as tk
 from tkinter import messagebox
+from tkinter import filedialog
 import include.model as model
 
 GEOMETRY = '1280x720+200+10'
@@ -24,16 +25,21 @@ class View(object):
         root = tk.Tk()
         root.bind("<Escape>", sys.exit)
         root.title("Luke's Super Duper Dupe Finder")
-        root.geometry(GEOMETRY)
         self.controller = controller
         self.dir = tk.StringVar()
+        self.dir.set(os.getcwd())
         #create frame to house buttons
         buttonFrame = tk.Frame(root)
         buttonFrame.config(padx=5, pady=5, bd=5, relief=tk.RAISED, bg='#0000FF')
-        buttonFrame.pack(side=tk.TOP, fill=tk.BOTH)
+        buttonFrame.pack(side=tk.TOP, fill=tk.X)
+        #create button for browsing directories
+        browse = tk.Button(buttonFrame, text="Browse", command=self.chooseDir)
+        browse.pack(side=tk.LEFT, anchor=tk.W)
+        browse.config(padx=5, pady=5, bd=5, relief=tk.RAISED)
         #create label for entry prompt
-        self.label = tk.Label(buttonFrame, text="Enter a path to search:")
+        self.label = tk.Label(buttonFrame, text=" or enter a path to search:")
         self.label.pack(side=tk.LEFT)
+        self.label.config(padx=5, pady=5)
         #create entry box
         self.entry = tk.Entry(buttonFrame, textvariable=self.dir, width=40)
         self.entry.bind("<Return>", lambda event: self.findDupes())
@@ -55,19 +61,19 @@ class View(object):
         #create results frame to house list boxes
         resultFrame = tk.Frame(root)
         resultFrame.config(padx=5, pady=5, bd=5, relief=tk.RAISED, bg='#00ff00')
-        resultFrame.pack(side=tk.BOTTOM)
+        resultFrame.pack(side=tk.TOP, fill=tk.BOTH)
         scrollbar = tk.Scrollbar(resultFrame)
         scrollbar.pack( side = tk.RIGHT, fill=tk.Y )
         #since there are two file locations for each duplicate files, we will use two listboxes
         self.results = tk.Listbox(resultFrame, yscrollcommand = scrollbar.set)
-        self.results.pack( side = tk.LEFT, fill = tk.BOTH )
+        self.results.pack( side = tk.LEFT, fill = tk.BOTH, expand=1)
         self.results.config( bg='white', bd=5)
-        self.results.config(width=WIDTH//2, height=HEIGHT)
+        # self.results.config(width=resultFrame.winfo_width()//2, height=resultFrame.winfo_height())
 
         self.results2 = tk.Listbox(resultFrame, yscrollcommand = scrollbar.set)
-        self.results2.pack( side = tk.LEFT, fill = tk.BOTH )
+        self.results2.pack( side = tk.LEFT, fill = tk.BOTH, expand=1)
         self.results2.config( bg='white', bd=5)
-        self.results2.config(width=WIDTH//2, height=HEIGHT)
+        # self.results2.config(width=resultFrame.winfo_width()//2, height=resultFrame.winfo_height())
 
         scrollbar.config( command = self.syncScroll )
 
@@ -77,7 +83,7 @@ class View(object):
             self.results.delete(0, tk.END)
             self.results2.delete(0, tk.END)
         #if the user has not entered an alternative path use cwd
-        if self.entry.get() == "":
+        if self.dir.get() == os.getcwd():
             print(os.getcwd())
             dupes=self.controller.findDupes(os.getcwd())
             for x in dupes:
@@ -85,10 +91,10 @@ class View(object):
                 self.results2.insert(tk.END, x[1])
         else:
             #ensure the path is a valid directory before searching
-            if os.path.isdir(self.entry.get()):
-                dupes=self.controller.findDupes(self.entry.get())
+            if os.path.isdir(self.dir.get()):
+                dupes=self.controller.findDupes(self.dir.get())
                 for x in dupes:
-                    self.results.insert(tk.END, x)
+                    self.results.insert(tk.END, x[0])
                     self.results2.insert(tk.END, x[1])
             else:
                 messagebox.showinfo("Incorrect Path", "Oops, that isn't a valid path!")
@@ -100,5 +106,8 @@ class View(object):
         self.entry.focus()
 
     def syncScroll(self, *args):
-        apply(self.results.yview(*args))
-        apply(self.results2.yview(*args))
+        self.results.yview(*args)
+        self.results2.yview(*args)
+
+    def chooseDir(self):
+        self.dir.set(filedialog.askdirectory())
