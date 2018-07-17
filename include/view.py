@@ -29,6 +29,7 @@ class View(object):
         self.listColor = "#dfe6e9"
         self.buttonFont = "system 12"
         self.textColor = "#dfe6e9"
+        self.labelFont = "system 10"
         #Add root tkinter
         root = tk.Tk()
         root.bind("<Escape>", sys.exit)
@@ -48,12 +49,12 @@ class View(object):
         #create label for entry prompt
         self.label = tk.Label(buttonFrame, text=" or enter a path to search:")
         self.label.pack(side=tk.LEFT)
-        self.label.config(padx=5, pady=5, bg=self.backgroundColor)
+        self.label.config(padx=5, pady=5, bg=self.backgroundColor, font=self.labelFont)
         #create entry box
         self.entry = tk.Entry(buttonFrame, textvariable=self.dir, width=40)
         self.entry.bind("<Return>", lambda event: self.findDupes())
         self.entry.pack(side=tk.LEFT, padx=10)
-        self.entry.config(relief=tk.SUNKEN, bd=5)
+        self.entry.config(relief=tk.SUNKEN, bd=5, font=self.labelFont)
         self.entry.focus()
         #create find button linked to findDupes command
         find = tk.Button(buttonFrame, text="Find Dupes", command=self.findDupes)
@@ -76,20 +77,14 @@ class View(object):
         resultFrame.pack(side=tk.TOP, fill=tk.BOTH)
         vertscrollbar = tk.Scrollbar(resultFrame)
         vertscrollbar.pack( side = tk.RIGHT, fill=tk.Y )
-        horizscrollbar = tk.Scrollbar(resultFrame)
-        horizscrollbar.pack( side = tk.BOTTOM, fill=tk.X )
-        horizscrollbar2 = tk.Scrollbar(resultFrame)
-        horizscrollbar2.pack( side = tk.BOTTOM, fill=tk.X )
         #since there are two file locations for each duplicate files, we will use two listboxes
-        self.results = tk.Listbox(resultFrame, yscrollcommand = vertscrollbar.set, xscrollcommand= horizscrollbar.set)
+        self.results = tk.Listbox(resultFrame, yscrollcommand = vertscrollbar.set)
         self.results.pack( side = tk.LEFT, fill = tk.BOTH, expand=1)
-        self.results.config( bg=self.listColor, bd=5)
-        # self.results.config(width=resultFrame.winfo_width()//2, height=resultFrame.winfo_height())
+        self.results.config( bg=self.listColor, bd=5, font=self.labelFont)
 
-        self.results2 = tk.Listbox(resultFrame, yscrollcommand = scrollbar.set, xscrollcommand= horizscrollbar.set)
+        self.results2 = tk.Listbox(resultFrame, yscrollcommand = vertscrollbar.set)
         self.results2.pack( side = tk.LEFT, fill = tk.BOTH, expand=1)
-        self.results2.config( bg=self.listColor, bd=5)
-        # self.results2.config(width=resultFrame.winfo_width()//2, height=resultFrame.winfo_height())
+        self.results2.config( bg=self.listColor, bd=5, font=self.labelFont)
 
         vertscrollbar.config( command = self.syncScroll )
 
@@ -103,15 +98,15 @@ class View(object):
             print(os.getcwd())
             dupes=self.controller.findDupes(os.getcwd())
             for x in dupes:
-                self.results.insert(tk.END, x[0])
-                self.results2.insert(tk.END, x[1])
+                self.results.insert(tk.END, x[0].replace(self.dir.get(),""))
+                self.results2.insert(tk.END, x[1].replace(self.dir.get(),""))
         else:
             #ensure the path is a valid directory before searching
             if os.path.isdir(self.dir.get()):
                 dupes=self.controller.findDupes(self.dir.get())
                 for x in dupes:
-                    self.results.insert(tk.END, x[0])
-                    self.results2.insert(tk.END, x[1])
+                    self.results.insert(tk.END, x[0].replace(self.dir.get(),""))
+                    self.results2.insert(tk.END, x[1].replace(self.dir.get(),""))
             else:
                 messagebox.showinfo("Incorrect Path", "Oops, that isn't a valid path!")
 
