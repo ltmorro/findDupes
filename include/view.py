@@ -56,7 +56,7 @@ class View(object):
         #create reset button linked to clearText command
         reset = tk.Button(buttonFrame, text="Reset", command=self.clearText)
         reset.pack(side=tk.LEFT, anchor=tk.W)
-        reset.config(padx=5, pady=5, bd=5, relief=tk.RAISED, bg=self.cautiColor, activebackground=self.cautiHoverColor)
+        reset.config(padx=5, pady=5, bd=5, relief=tk.RAISED, bg=self.cautionColor, activebackground=self.cautionHoverColor)
         #create find button linked to findDupes command
         find = tk.Button(buttonFrame, text="Find Dupes", command=self.findDupes)
         find.pack(side=tk.LEFT, anchor=tk.W)
@@ -64,7 +64,7 @@ class View(object):
         #create quit button linked to sys.exit command
         quit = tk.Button(buttonFrame, text="Quit", command=sys.exit)
         quit.pack(side=tk.RIGHT, anchor=tk.E)
-        quit.config(padx=5, pady=5, bd=5, relief=tk.RAISED, bg=self.cautiColor, activebackground=self.cautiHoverColor)
+        quit.config(padx=5, pady=5, bd=5, relief=tk.RAISED, bg=self.cautionColor, activebackground=self.cautionHoverColor)
         #create results frame to house list boxes
         resultFrame = tk.Frame(root)
         resultFrame.config(padx=5, pady=5, bd=5, relief=tk.RAISED, bg=self.backgroundColor)
