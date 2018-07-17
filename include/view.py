@@ -21,6 +21,13 @@ class Controller(object):
 
 class View(object):
     def __init__(self, controller):
+        self.backgroundColor = "#b2bec3"
+        self.buttonColor = "#0984e3"
+        self.buttonHoverColor = "#74b9ff"
+        self.cautionColor = "#d63031"
+        self.cautionHoverColor = "#ff7675"
+        self.listColor = "#dfe6e9"
+        # self.buttonFonn
         #Add root tkinter
         root = tk.Tk()
         root.bind("<Escape>", sys.exit)
@@ -30,12 +37,12 @@ class View(object):
         self.dir.set(os.getcwd())
         #create frame to house buttons
         buttonFrame = tk.Frame(root)
-        buttonFrame.config(padx=5, pady=5, bd=5, relief=tk.RAISED, bg='#0000FF')
+        buttonFrame.config(padx=5, pady=5, bd=5, relief=tk.RAISED, bg=self.backgroundColor)
         buttonFrame.pack(side=tk.TOP, fill=tk.X)
         #create button for browsing directories
         browse = tk.Button(buttonFrame, text="Browse", command=self.chooseDir)
         browse.pack(side=tk.LEFT, anchor=tk.W)
-        browse.config(padx=5, pady=5, bd=5, relief=tk.RAISED)
+        browse.config(padx=5, pady=5, bd=5, relief=tk.RAISED, bg=self.buttonColor, activebackground=self.buttonHoverColor)
         #create label for entry prompt
         self.label = tk.Label(buttonFrame, text=" or enter a path to search:")
         self.label.pack(side=tk.LEFT)
@@ -49,30 +56,30 @@ class View(object):
         #create reset button linked to clearText command
         reset = tk.Button(buttonFrame, text="Reset", command=self.clearText)
         reset.pack(side=tk.LEFT, anchor=tk.W)
-        reset.config(padx=5, pady=5, bd=5, relief=tk.RAISED, bg="#ff0000")
+        reset.config(padx=5, pady=5, bd=5, relief=tk.RAISED, bg=self.cautiColor, activebackground=self.cautiHoverColor)
         #create find button linked to findDupes command
         find = tk.Button(buttonFrame, text="Find Dupes", command=self.findDupes)
         find.pack(side=tk.LEFT, anchor=tk.W)
-        find.config(padx=5, pady=5, bd=5, relief=tk.RAISED, bg="#ff0000")
+        find.config(padx=5, pady=5, bd=5, relief=tk.RAISED, bg=self.buttonColor, activebackground=self.buttonHoverColor)
         #create quit button linked to sys.exit command
         quit = tk.Button(buttonFrame, text="Quit", command=sys.exit)
         quit.pack(side=tk.RIGHT, anchor=tk.E)
-        quit.config(padx=5, pady=5, bd=5, relief=tk.RAISED, bg="#ff0000")
+        quit.config(padx=5, pady=5, bd=5, relief=tk.RAISED, bg=self.cautiColor, activebackground=self.cautiHoverColor)
         #create results frame to house list boxes
         resultFrame = tk.Frame(root)
-        resultFrame.config(padx=5, pady=5, bd=5, relief=tk.RAISED, bg='#00ff00')
+        resultFrame.config(padx=5, pady=5, bd=5, relief=tk.RAISED, bg=self.backgroundColor)
         resultFrame.pack(side=tk.TOP, fill=tk.BOTH)
         scrollbar = tk.Scrollbar(resultFrame)
         scrollbar.pack( side = tk.RIGHT, fill=tk.Y )
         #since there are two file locations for each duplicate files, we will use two listboxes
         self.results = tk.Listbox(resultFrame, yscrollcommand = scrollbar.set)
         self.results.pack( side = tk.LEFT, fill = tk.BOTH, expand=1)
-        self.results.config( bg='white', bd=5)
+        self.results.config( bg=self.listColor, bd=5)
         # self.results.config(width=resultFrame.winfo_width()//2, height=resultFrame.winfo_height())
 
         self.results2 = tk.Listbox(resultFrame, yscrollcommand = scrollbar.set)
         self.results2.pack( side = tk.LEFT, fill = tk.BOTH, expand=1)
-        self.results2.config( bg='white', bd=5)
+        self.results2.config( bg=self.listColor, bd=5)
         # self.results2.config(width=resultFrame.winfo_width()//2, height=resultFrame.winfo_height())
 
         scrollbar.config( command = self.syncScroll )
